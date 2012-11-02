@@ -1,0 +1,58 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Cache-Control" content="no-cache">
+<script type="text/javascript" SRC='http://sdk.oberon-media.com/JS/ajax.js'></script>
+<script type="text/javascript" SRC='http://sdk.oberon-media.com/JS/cookie.js'></script>
+
+<SCRIPT LANGUAGE="javascript">
+<!--
+
+function init()
+{
+	var pos=window.location.href.indexOf('#');
+	var data=window.location.href.substr(pos+1);
+	var pos=data.indexOf('&');
+	var pipe_id=data.substr(0,pos);
+	var back_domain=data.substr(pos+1);
+
+	window.ajax=new AJAX();
+
+	window.pipe=new CookiePipe(pipe_id,back_domain);
+
+	window.pipe.listen(function(id,data){
+
+		var pos=data.indexOf('|');
+		var command='';
+		var request='';
+		if(pos==-1) { command=data; }
+		else {
+			command=data.substr(0,pos);
+			request=data.substr(pos+1);
+			}
+
+		if(command=='load') {
+			window.pipe.reply(id,'load OK');
+			return;
+			}
+
+
+		if(command=='send') {
+			var pos=request.indexOf('|');
+			var url=request.substr(0,pos);
+			var command=request.substr(pos+1);
+			window.ajax.AJAXSendCommand(url,command,function(response){
+				window.pipe.reply(id,response);
+				});
+			}
+
+		});
+}
+//-->
+</SCRIPT>
+
+</HEAD>
+<BODY ONLOAD="init();">
+AJAX Proxy v.1.05 - OK
+<IFRAME id='back-frame'></IFRAME>
+</BODY>
+</HTML>

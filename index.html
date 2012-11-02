@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 1.1 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<HEAD>
+<script language="javascript" type="text/javascript" SRC='http://sdk.oberon-media.com/JS/blaze.js'></script>
+</HEAD>
+
+<body>
+<DIV ID='status_div' STYLE='display:none;'>
+<TABLE>
+  <TR>
+    <TD><IMG src='http://sdk.oberon-media.com/JS/loading.gif' /></TD>
+    <TD><H1>Redirecting to the game page...</H1><DIV ID='status'></DIV></TD>
+  </TR>
+</TABLE>
+</DIV>
+<!--
+<DIV ID='ddebug' STYLE='background-color:#33DD33;'></DIV><A HREF="javascript:void(0);" ONCLICK="document.getElementById('ddebug').innerHTML='';">[Clear]</A>
+-->
+
+
+<div id="fb-root"></div>
+
+<script type="text/javascript">
+<!--
+var GAME_NAME='test Game';
+var APP_ID='112613825461047';
+var GAME_ID='118392197';		//Packman
+var GAME_PAGE='http://apps.facebook.com/blaze-sdk/';
+
+
+function setVars(blaze)
+{
+	blaze.gameName=GAME_NAME;
+	blaze.SUBST_URL=GAME_PAGE;
+
+	blaze.gameId=GAME_ID;
+	blaze.channel=getUrlParameter(document.location.href,'channel');
+
+	blaze.skip_getGameUrl=true;	//FOR DEBUG
+	//window.blaze.skip_redirect=true;	//FOR DEBUG
+
+	var reason=getUrlParameter(document.location.href,'reason');
+	var param_ref=getUrlParameter(document.location.href,'ref');
+	if(param_ref=='bookmarks') reason='bookmarks';
+	if(!reason) return 'break';
+
+	blaze.on_begin=function(blaze,func) {
+		var str=func;
+		if(func=='_loadProxy') str='Loading AJAX Proxy...';
+		if(func=='_sureFBLogin') str='trying login to FB...';
+		if(func=='getLoginStatus') str='Get FB login status...';
+		if(func=='_omnitureInit') str='Init Omniture reporting';
+		if(func=='_redirect') str='Redirecting...';
+		if(func=='_loadFacebook') str='Loading Facebook SDK...';
+		if(func=='_getSettings') str='Getting settings...';
+		if(func=='_srLogin') str='Login to Social Ring Server...';
+		if(func=='_queryChannelUrl') str='Getting redirect URL...';
+		if(func=='_getGameUrl') str='Getting game info...';
+
+
+		document.getElementById('status_div').style.display='';
+		var el=document.getElementById('status');
+		el.innerHTML=str;
+		}
+	blaze.on_end=function(blaze,str) {
+		var el=document.getElementById('status');
+		el.innerHTML='';
+		if(str=='_redirect') {
+			document.body.style.backgroundColor='#FFFFFF';
+			var div=document.getElementById('status_div');
+			div.style.display='none';
+			return;
+			}
+		}
+	blaze.on_error=function(str) {
+		var el=document.getElementById('status');
+		el.innerHTML=str;
+		var div=document.getElementById('status_div');
+		div.style.display=str ? '' : 'none';
+		}
+	blaze.on_debug=function(str) {
+		var el=document.getElementById('ddebug');
+		if(!el) return;
+		if(el.innerHTML) el.innerHTML+='<BR>';
+		el.innerHTML+=str;
+		}
+}
+
+
+BlazeInit(GAME_ID,setVars);
+
+
+//-->
+</script>
+
+
+
+<HR />
+<H1>Blaze SDK Test Facebook Page</H1>
+<HR />
+<P />
+<A href="doc/doc.htm"><FONT SIZE="+1">Blaze SDK v.1.0 Documentation</FONT></A>
+<P />
+<A HREF="test/test.htm"><FONT SIZE=+1>Blaze SDK Test App</FONT></A>
+<P />
+
+</body>
+</html>

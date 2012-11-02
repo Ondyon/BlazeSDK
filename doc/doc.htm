@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<style type="text/css">
+<!--
+pre
+{
+font-face:Courier;
+}
+text
+{
+font-face:arial;
+}
+.comments
+{
+font-face:arial;
+color:#000040;
+font-weight:bold;
+}
+-->
+</style>
+
+</head>
+
+
+<BODY>
+<HR />
+<H1>Blaze SDK Draft</H1>
+<HR />
+<P />
+
+The new up-to-date version in MS Word format is here: <A HREF="SDKdoc.docx">Blaze JavaScript SDK Document</A><BR />
+Please use this document! Web document below may be outdated.
+<P />
+
+<H2>0. Blaze SDK. What is it? and Why for?</H2>
+<P />
+JavaScript Blaze SDK is a client-side JavaScript module that provides 3rd-part developers with following functions:<BR />
+<UL>
+<LI>Transparent use of FaceBook SDK functions</LI>
+<LI>Automatic URL substitutions of game URLs to Channel game URLs - in all POSTS to FaceBook from the game</LI>
+<LI>Simplified wrappers for most of FaceBook SDK function (UNDER CONSTRUCTION)</LI>
+</UL>
+
+Simply include and initialize Blaze module and all the links posted from game will lead to your channel.
+<P />
+
+<H2>1. Initializing Blaze SDK for standalone game page</H2>
+<P />
+To use Blaze SDK HTML code of a game page must contain the following lines:
+<P />
+<PRE>
+&lt;script language=javascript SRC='http://sdk.oberon-media.com/js/common/sring/blaze.js'&gt;&lt;/script&gt;
+&lt;script language=javascript SRC='http://sdk.oberon-media.com/js/common/sring/ajax.js'&gt;&lt;/script&gt;
+</PRE>
+<P />
+After this you need to perform Facebook initialization<BR />
+Firstly you has to init facebook SDK as it recommended in Facebook developer's guide.<BR />
+Do not forget to declare HTML DIV placeholder with ID="fb-root"<BR />
+And now add the Blaze initialization in its callback (<FONT COLOR="#BB0000">shown in red</FONT>);
+
+<PRE>
+&lt;div id="fb-root"&gt;&lt;/div&gt;
+
+&lt;script language=javascript&gt;
+&lt;!--
+var APP_ID='11.....';
+
+<FONT CLASS='comments'>// INIT Facebook</FONT>
+window.fbAsyncInit = function() {
+	FB.init({appId: APP_ID, status: true, cookie: true, xfbml: true});
+	};
+(function() {
+	var e = document.createElement('script');
+	e.async = true;
+	e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+	<FONT COLOR="#BB0000">e.onreadystatechange = function() {
+		<FONT CLASS='comments'>//HERE FaceBook SDK is loaded</FONT>
+		SURE_Blaze( function(blaze) { initApp();} );
+		};
+	e.onload=e.onreadystatechange;</FONT>
+	document.getElementById('fb-root').appendChild(e);
+	}()
+);
+
+<!--
+<FONT CLASS='comments'>//INIT AJAX, it is needed for requests to SocialRing Server</FONT>
+<FONT COLOR="#BB0000">window.ajax=new AJAX('http://ogc.oberon-media.com/sring/ajax-proxy.htm');</FONT>
+ -->
+//--&gt;
+&lt;/script&gt;
+</PRE>
+
+You see the function <FONT FACE="Courier">initApp()</FONT> in the Blaze SDK initialization callback.<BR />
+This is you custom initialization function.
+You need to prerform some more obligatory actions in it.<BR />
+Game developer can customize this function, but it must meet some conditions and must contain some obligatory things:<BR />
+<UL>
+<LI> <FONT FACE="Courier">initApp()</FONT> must be called when Facebook SDK and Blaze SDK are loaded<BR />
+	<I>The best place to call it - is Blaze loading callback (as it shown above in red)</I>
+</LI>
+<LI> <FONT FACE="Courier">initApp()</FONT> must firstly call <FONT FACE="Courier">blaze.getLoginStatus()</FONT> or <FONT FACE="Courier">blaze.login()</FONT> Parameters of its callback can be used or ignored, in any case Blaze SDK get it inside this 2 functions and stores for future internal use.<BR />
+	<I>The best way is to call <FONT FACE="Courier">blaze.getLoginStatus()</FONT> and if user is not logged into Facebook, call <FONT FACE="Courier">blaze.login()</FONT></I><BR />
+</LI>
+<LI> <FONT FACE="Courier">initApp()</FONT> must call <FONT FACE="Courier">blaze._srLogin()</FONT> it must be called <B>after</B> the <FONT FACE="Courier">blaze.getLoginStatus()</FONT> or <FONT FACE="Courier">blaze.login()</FONT> has finished.<BR />
+	<I>The best way to do it - put the <FONT FACE="Courier">initApp()</FONT> into their callback.</I>
+</LI>
+</UL>
+Only after <FONT FACE="Courier">blaze._srLogin()</FONT> is finished the Application can perform any other actions.<BR />
+Here you can see the sample code that meet this conditions. You can simply use this code "as is".
+
+<PRE>
+function initApp()
+{
+	<FONT CLASS='comments'>//here must be set the constants of session parameters:</FONT>
+	blaze.gameId=GAME_ID;
+
+	blaze.getLoginStatus(
+		function() {
+		<FONT CLASS='comments'>//HERE Facebook Login status has GOT</FONT>
+
+		if(blaze.userId) {	<FONT CLASS='comments'>// ALREADY LOGGED INTO FB</FONT>
+			blaze._srLogin(function() {
+				<FONT CLASS='comments'>// HERE THE INITIALIZATION IS COMPLETE !!!</FONT>
+				});
+			}
+		else {	<FONT CLASS='comments'>//FB is not logged in</FONT>
+			<FONT CLASS='comments'>//Performing Facebook login...</FONT>
+			blaze.login( function(response) {
+				if(response) {
+					<FONT CLASS='comments'>// HERE FB LOGIN completed</FONT>
+					blaze._srLogin(function() {
+						<FONT CLASS='comments'>// HERE THE INITIALIZATION IS COMPLETE !!!</FONT>
+						});
+					}
+				});
+			}
+		});
+	<FONT CLASS='comments'>//if you wish to substitute FB with Blaze.</FONT>
+	//FB=window.blaze
+}
+</PRE>
+
+
+When initialization completed the singleton <FONT FACE="Courier">window.blaze</FONT> is available.<BR />
+Use this variable to access to all Blaze functions.<BR />
+if you use <FONT FACE="Courier">FB=window.blaze;</FONT>
+you can still use FB variable to access to Blaze function.<BR />
+<P />
+
+
+
+<H2>2. Initializing Blaze SDK for Facebook game page</H2>
+
+When you creating the Facebook application page running inside Facebook environment<BR />
+you have loaded Facebook SDK already, so you need not to load it.<BR />
+The initialization in this case will be more simple. Use the function above in Blaze initialization callback:<BR />
+
+<PRE>
+SURE_Blaze(initApp);
+</PRE>
+
+
+
+
+<H2>3. Mandatory functions</H2>
+<P />
+If you do not use <FONT FACE="Courier">FB=window.blaze;</FONT>
+you obliged to use Blaze functions instead of similar Facebook ones.<BR />
+All the parameters are similar to Facebook, see Facebook SDK documentation for details.
+<P />
+<PRE>
+ Blaze.login()		instead of FB.login()
+ Blaze.logout()		instead of FB.logout()
+ Blaze.getLoginStatus()	instead of FB.getLoginStatus()
+ Blaze.getSession()		instead of FB.getSession()
+ Blaze.ui()			instead of FB.ui()
+ Blaze.api()			instead of FB.api()
+ Blaze.parse()		instead of FB.<FONT color="red">XFBML</FONT>.parse(el)	//ATTENTION in red!
+</PRE>
+<P />
+
+
+<H2>4. Wrappers and internal functions</H2>
+<P />
+Blaze provide some wrapping functions for more comfortable use of Facebook SDK.<BR />
+Also there's some internal function used in login procedure.<BR />
+They can be accessed <FONT COLOR="red">only</FONT> through <FONT FACE="Courier">window.blaze</FONT> variable<BR />
+<PRE>
+	run(function_name,parameters) - try to call FB methods (hooked if hook exists)
+	_srLogin() - login to socialRingServer
+
+<!--
+(uses FB JS API:)
+	JSpostFeed(user,obj,callback)
+	JSshare(url,callback)
+	JSuserInfo(callback)
+	JSpostWall(obj,callback)
+
+(uses FB FBML API:)
+	MLinvite : function(link,game_name,callback)
+	MLgift : function(link,game_name,callback)
+	MLshare : function(link,callback)
+	MLbookmark : function(root)
+	MLboard : function(root)
+-->
+</PRE>
+<P />
+
+
+<H2>5. Omniture Reporting</H2>
+
+To use Omniture Reporting first of all include following files:
+<PRE>
+&lt;script language=javascript SRC='http://sdk.oberon-media.com/js/common/sring/omniture.js'&gt;&lt;/script&gt;
+&lt;script language=javascript SRC='http://sdk.oberon-media.com/js/common/sring/s_code.js'&gt;&lt;/script&gt;
+</PRE>
+Then you need initialize Omniture JS engine calling <FONT face="Courier">blaze._omnitureInit()</FONT>
+If you are sure that Blaze is loaded at this moment and login to Social Ring Server is completed
+you can call it without parameters.
+But better use the following code inside blaze._srLogin() callback (marked with BLUE).
+<P />
+(This is modification of login procedure with Omniture initialization embedded)
+<PRE>
+function initApp()
+{
+	<FONT CLASS='comments'>//here must be set the constants of session parameters:</FONT>
+	blaze.gameId=GAME_ID;
+
+	blaze.getLoginStatus(
+		function() {
+		<FONT CLASS='comments'>//HERE Facebook Login status has GOT</FONT>
+
+		if(blaze.userId) {	<FONT CLASS='comments'>// ALREADY LOGGED INTO FB</FONT>
+			blaze._srLogin(function(<FONT COLOR='blue'>param</FONT>) {
+				<FONT COLOR='blue'>blaze._omnitureInit(param.response);</FONT>
+				<FONT CLASS='comments'>// HERE THE INITIALIZATION IS COMPLETE !!!</FONT>
+				});
+			}
+		else {	<FONT CLASS='comments'>//FB is not logged in</FONT>
+			<FONT CLASS='comments'>//Performing Facebook login...</FONT>
+			blaze.login( function(response) {
+				if(response) {
+					<FONT CLASS='comments'>// HERE FB LOGIN completed</FONT>
+					blaze._srLogin(function(<FONT COLOR='blue'>param</FONT>) {
+						<FONT COLOR='blue'>blaze._omnitureInit(param.response);</FONT>
+						<FONT CLASS='comments'>// HERE THE INITIALIZATION IS COMPLETE !!!</FONT>
+						});
+					}
+				});
+			}
+		});
+	<FONT CLASS='comments'>//if you wish to substitute FB with Blaze.</FONT>
+	//FB=window.blaze
+}
+</PRE>
+Then you can report the events to Omniture System using <FONT FACE='Courier'>blaze._omnitureSend()</FONT> function
+<P />
+<PRE>
+blaze._omnitureSend(event_no,{custom_parameters})
+</PRE>
+Most of custom parameters will be set automatically inside <FONT FACE='Courier'>blaze._omnitureSend()</FONT> function
+and you need not specify them. Some parameters are required. See List of Omniture Events for details.<BR />
+Example<BR />
+<PRE>
+blaze._omnitureSend(7,{ eVar5:'Discovered', eVar2:'viral'});
+blaze._omnitureSend(22,{});
+</PRE>
+<B>List of Omniture Events</B><BR />
+Now only 2 events are allowed for SDK:
+<PRE>
+SDK Purchase		blaze._omnitureSend(22,{});		<FONT CLASS='comments'>//additional parameters are set automatically</FONT>
+SDK Purchase Value	blaze._omnitureSend(23,{ s_products : '-products_line-' });
+</PRE>
+
+
+<P />&nbsp;<P />
+
+</BODY>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 1.1 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Blaze SDK test</title>
+<script language="javascript" type="text/javascript" SRC='http://sdk.oberon-media.com/JS/blaze.js'></script>
+<script language="javascript" type="text/javascript" SRC='http://sdk.oberon-media.com/JS/blaze-ext.js'></script>
+<script language="javascript" type="text/javascript" SRC='test.js'></script>
+</head>
+
+
+<body style='background-color:#50D9B9;'>
+
+<DIV STYLE="position:absolute;right:0px;top:0px;border:1px solid #999999;background-color:#DDEEDD;padding-left:6px;padding-right:6px;"> v.1.07 </DIV>
+
+<DIV ID='status_div' STYLE='display:none;'>
+<TABLE>
+  <TR>
+    <TD><IMG SRC='loading.gif' WIDTH=1 HEIGHT=160></TD>
+    <TD VALIGN=top><IMG SRC='loading.gif'></TD>
+    <TD VALIGN=top>
+	<H1>Processing data...</H1>
+	<DIV ID='status'></DIV>
+	<DIV ID='derror' STYLE='background-color:#DD3333;'></DIV>
+    </TD>
+  </TR>
+</TABLE>
+</DIV>
+<DIV ID='ddebug' STYLE='background-color:#33DD33;display:none;'></DIV><A HREF="javascript:void(0);" ID='ddebug1' ONCLICK="document.getElementById('ddebug').innerHTML='';document.getElementById('ddebug').style.display='none';document.getElementById('ddebug1').style.display='none';"  STYLE='display:none;'>[Clear]</A>
+
+
+<div id="fb-root"></div>
+<iframe id="ajax-frame" style="display:none"></iframe>
+<div id="dialog-div" style="display:none"></div>
+
+<HR>
+<CENTER><H1>Blaze SDK Draft Test Application</H1></CENTER>
+<HR>
+
+<!--
+<div style="background-color:#FFAAAA;">
+<h3>INTERNAL TESTS</h3>
+<A HREF="javascript:blaze._dialog('code',300,300,function(res){aler(res);});">Dialog!</A><BR>
+<A HREF="javascript:blaze._closeDialog();">Close Dialog</A>
+
+</div>
+<HR>
+-->
+
+
+<div style="background-color:#AAFFFF;">
+<h3>Game Emulation Parameters</h3>
+
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=6>
+  <TR>
+    <TD>Facebook Application URL:</TD>
+    <TD>
+	<INPUT TYPE=text ID='url_switch' VALUE='http://apps.facebook.com/blaze-sdk/' SIZE=30 ONCHANGE="var el=document.getElementById('url_switch');blaze.SUBST_URL=el.value; alert(blaze.SUBST_URL);"><A HREF="javascript:blaze.SUBST_URL=document.getElementById('url_switch').value; alert('Game page URL is set to '+blaze.SUBST_URL);">--&gt;SET</A> &nbsp;&nbsp;&nbsp;
+    </TD>
+    <TD>
+	<INPUT type="checkbox" ID="game-url-from-db" ONCLICK="var el=document.getElementById('game-url-from-db');if(el.checked){blaze._getGameUrl(blaze.gameId,function(res){if(res.error)alert('no channel specified');alert('Game URL has got from server. ('+res.facebookGameURL+')');})}; document.getElementById('url_switch').disabled=el.checked;">Get it from Database
+    </TD>
+  </TR>
+  <TR>
+    <TD>Select Game Id:</TD>
+    <TD>
+<SELECT ID='game_switch' ONCHANGE="var el=document.getElementById('game_switch');blaze.gameId=el.options[el.selectedIndex].value; alert(blaze.gameId); blaze.gameName=el.options[el.selectedIndex].label;alert(el.options[el.selectedIndex].text);document.getElementById('sr_userchan').innerHTML='';">
+<OPTION VALUE='119044847'>Double Casino</OPTION>
+<OPTION VALUE='500002240'>Bubble town</OPTION>
+</SELECT>
+    </TD>
+    <TD>
+	Add Game to the list. ID:<INPUT TYPE="text" ID="new-game-input"><A HREF="javascript:blaze._getGameInfo(document.getElementById('new-game-input').value,addGameCallback);">[+]</A>
+    </TD>
+  </TR>
+  <TR>
+    <TD>Select Originator Channel:</TD>
+    <TD>
+<SELECT ID='channel_switch' ONCHANGE="var el=document.getElementById('channel_switch');blaze.channel=el.options[el.selectedIndex].value; alert(blaze.channel);document.getElementById('sr_userchan').innerHTML='';">
+<OPTION VALUE='0' SELECTED>Game is on FACEBOOK</OPTION>
+<OPTION VALUE='110448413'>AT&T</OPTION>
+<OPTION VALUE='110341560'>I-Play</OPTION>
+</SELECT>
+    </TD>
+    <TD>
+	Add Channel to the list. ID:<INPUT TYPE="text" ID="new-channel-id-input"> Name:<INPUT TYPE="text" ID="new-channel-name-input"> <A HREF="javascript:var el=document.createElement('option');el.value=document.getElementById('new-channel-id-input').value;el.label=document.getElementById('new-channel-name-input').value;document.getElementById('channel_switch').appendChild(el);alert(el.label+' is added to your channels list');">[+]</A>
+    </TD>
+  </TR>
+  <TR>
+    <TD>Game Generated Post</TD>
+    <TD>
+	<INPUT TYPE=checkbox ID='tst-game-generated' ONCLICK="window.blaze.game_generated=document.getElementById('tst-game-generated').checked;">
+    </TD>
+    <TD></TD>
+  </TR>
+</TABLE>
+
+</div>
+
+<div style="background-color:#AAFFFF;">
+<h3>Connect with facebook</h3>
+<SPAN ID='tst_auth'></SPAN>    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN ID='sr_userinfo'></SPAN> &nbsp;&nbsp;&nbsp; <SPAN ID='sr_userchan'></SPAN><BR>
+<A HREF="javascript:blaze_FBlogin()"><B>blaze.Login()</B></A><BR>
+<A HREF="javascript:void(0);" ONCLICK="blaze.logout(function(response){alert('logout OK');});document.getElementById('sr_userchan').innerHTML='';"><B>blaze.Logout()</B></A><BR>
+<A HREF="javascript:blaze_FBgetLoginStatus()"><B>blaze.getLoginStatus()</B></A><BR>
+<P>
+</div>
+<HR>
+
+
+<div style="background-color:#AAFFFF;">
+<h3>Test Functions - FOR INTERNAL USE ONLY</h3>
+<A HREF="javascript:blaze_srLogin()"><B>blaze.srLogin()</B></A> Login to SocialRing server using AJAX PROXY<BR>
+<A HREF="javascript:var str=window.blaze._getChannelURL('google.com','testReason',blaze.game_generated);alert(str);blaze.on_debug('_getChannelURL answer:'+str);"><B>blaze._getChannelURL()</B></A> - test redirect function. Get URL of Redirect Page<BR>
+<A HREF="javascript:blaze_Test_queryChannelURL(blaze.gameId,blaze.srLoginResponse.userId,blaze.channel,document.getElementById('force_cre').checked,document.getElementById('back_ref').value,function(res){if(res && !res.error) { alert(res.link); blaze.on_debug('Redirect link:'+res.link);} else alert(res.error); });"><B>blaze._queryChannelUrl()</B></A> - Get redirect URL from server.
+	(isForceCreated: <INPUT TYPE=checkbox ID='force_cre'> 
+	BackRef: <INPUT TYPE=text ID='back_ref' VALUE='' SIZE=60 STYLE='border:none;text-decoration:underline;background:transparent;'>)<BR>
+<A HREF="javascript:window.blaze._getSettings(function(response){alert(JSON2str(response));});"><B>blaze._getSettings()</B></A> Get Settings from Server<BR>
+<A HREF="javascript:blaze._getOmnitureSuit(function(res){alert(res)});"><B>blaze._getOmnitureSuit()</B></A> - get omniture suit for current channel.<BR>
+<A HREF="javascript:blaze._getGameUrl(blaze.gameId,function(param){if(param.error)alert('no channel specified');else alert(JSON2str(param));});"><B>blaze._getGameUrl()</B></A> - Get Game URL<BR>
+<A HREF="javascript:blaze._getGameInfo(blaze.gameId,function(ret){alert(JSON2str(ret))});"><B>GetGameInfo()</B></A> - Get full GameInfo from server
+<P>
+</div>
+<HR>
+
+
+<script language=javascript>
+<!--
+
+
+function showLoading(arr)
+{
+	var output='';
+	for(var i=0;i<arr.length;i++) {
+		var func=arr[i];
+		var str=func;
+		if(func=='api') str='FB api call...';
+		if(func=='_loadProxy') str='Loading AJAX Proxy...';
+		if(func=='_sureFBLogin') str='trying login to FB...';
+		if(func=='getLoginStatus') str='Get FB login status...';
+		if(func=='_omnitureInit') str='Init Omniture reporting';
+		if(func=='_redirect') str='Redirecting...';
+		if(func=='_loadFacebook') str='Loading Facebook SDK...';
+		if(func=='_getSettings') str='Getting settings...';
+		if(func=='_srLogin') str='Login to Social Ring Server...';
+		if(func=='_queryChannelUrl') str='Getting redirect URL...';
+		output+=str+'<BR>';
+		}
+
+	var el=document.getElementById('status');
+	while(el.childNodes.length) el.removeChild(el.childNodes[0]);
+	el.innerHTML=output;
+
+
+	var div=document.getElementById('status_div');
+	if(arr.length==0) {
+		if(document.getElementById('derror').innerHTML!='') return;
+		div.style.display='none';
+		return;
+		}
+	div.style.display='';
+}
+
+function b_setVars(blaze)
+{
+	document.getElementById('back_ref').value=window.location.href;
+
+	//here can be set:
+	var el=document.getElementById('game_switch');
+	blaze.gameId=el.options[el.selectedIndex].value;
+	blaze.gameName='test Game';
+
+	var el=document.getElementById('channel_switch');
+	blaze.channel='0';	//el.options[el.selectedIndex].value;
+
+	var el=document.getElementById('url_switch');
+	blaze.SUBST_URL=el.value;
+
+//	this.skip_getGameUrl=true; FOR DEBUG
+
+	blaze.on_begin=function(blaze,func) {
+		showLoading(blaze.status_pending);
+		}
+	blaze.on_end=function(blaze,str) {
+		showLoading(blaze.status_pending);
+
+		if(blaze.status_pending.length==0) {
+			document.body.style.backgroundColor='#FFFFFF';
+			}
+		else {
+			document.body.style.backgroundColor='#50D9B9';
+			}
+
+		if(str=='_srLogin') {
+			document.getElementById('sr_userinfo').innerHTML='SR Server Info: User homeChan='+window.blaze.srLoginResponse.channel+(window.blaze.user_forced ? '  NEW! user' : '');
+			}
+		if(str=='logout') {
+			document.getElementById('sr_userinfo').innerHTML='';
+			}
+
+		if(str=='_queryChannelUrl') {
+			document.getElementById('sr_userchan').innerHTML='User+Game_homeChan='+window.blaze.homeChannel;
+			}
+
+		if(str=='login' || str=='getLoginStatus' || str=='logout') {
+			window.blaze.JSuserInfo(function(response) {
+				var text='NOT LOGGED';
+				if(window.blaze.session) text='LOGGED as: '+response.name+' ('+response.id+')';
+				document.getElementById('tst_auth').innerHTML=text;
+				});
+			}
+		}
+	blaze.on_error=function(str) {
+		var el=document.getElementById('derror');
+		el.innerHTML=str;
+		}
+	blaze.on_debug=function(str) {
+		var el=document.getElementById('ddebug');
+		if(el.innerHTML) el.innerHTML+='<BR>';
+		el.innerHTML+=str;
+		el.style.display='';
+		document.getElementById('ddebug1').style.display='';;
+		}
+}
+
+
+
+var APP_ID='112613825461047';
+var GAME_ID=123;
+BlazeInit(GAME_ID,b_setVars);
+
+
+//-->
+</script>
+
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - user post own wall</h3>
+<A HREF="javascript:blaze_postFeed()">postFeed()</A> - Post message to my Wall NOW. Using JS API: <B>blaze.api('/me/feed'...)</B><BR>
+<A HREF="javascript:blaze_postWall()">postWall()</A> - Invoke Facebook dialog to Post message on my own wall. JavaScript API:    <B>blaze.ui('stream.post'...)</B><BR>
+&nbsp;<BR>
+<A HREF="javascript:blaze_rest_post_permissions()">Permissions</A> - Ask <B>Permissions</B> to Post using <B>REST API</B><BR>
+<A HREF="javascript:blaze_rest_post()">postStream()</A> - Publish using REST API:   <B>blaze.RESTpost()</B><BR>
+&nbsp;<BR>
+<A HREF="javascript:blaze_old_streamPublish_permissions()">Permissions</A> -  - Ask <B>Permissions</B> to Post using <B>OLD API</B><BR>
+<A HREF="javascript:blaze_old_streamPublish()">postStream()</A> - Publish using OLD JavaScript API:   <B>blaze.Connect.streamPublish()</B><BR>
+</div>
+<HR>
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - user post friends wall</h3>
+<A HREF="javascript:blaze_postFeed(document.getElementById('friend_name').value)">postFeed()</A> - Post to News Feed using JS API: <B>blaze.api('/<INPUT TYPE=text ID='friend_name' VALUE='vasiliy.fedorov' STYLE='border:none;background:transparent;text-decoration:underline;'>/feed'...)</B><BR>
+</div>
+<HR>
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - invite friend to play game</h3>
+<A HREF="javascript:blaze._doInvite('http://ya.ru',document.getElementById('invite_label').value,'',false,function(res){alert(res);});">Invite</A> - using XFBML request. Parse it using  <B>blaze.parse()</B>
+(Label to share:<INPUT TYPE="text" ID="invite_label" VALUE="My Game" STYLE='border:none;background:transparent;text-decoration:underline;'>)<BR>
+<div id="invite_div"></div>
+</div>
+<HR>
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - user send game gift</h3>
+<A HREF="javascript:blaze._doInvite('http://ya.ru',document.getElementById('gift_label').value,'',true,function(res){alert(res);});">Gift</A> using XFBML request. Parse it using  <B>blaze.parse()</B>
+(Label to share:<INPUT TYPE="text" ID="gift_label" VALUE="My Game" STYLE='border:none;background:transparent;text-decoration:underline;'>)<BR>
+<div id="gift_div"></div>
+</div>
+<HR>
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - user share link. own wall</h3>
+Using Facebook functionality to post "Share" message on a wall.<BR>
+<A HREF="javascript:blaze_share('http://ya.ru')">Share</A> using JS SDK:  <B>Blaze.ui('stream.share')</B><BR>
+<A HREF="javascript:blaze_shareXFBML('http://ya.ru')">Share</A> using XFBML request. Parse it using  <B>blaze.parse()</B> The Button "Share" will appears<BR>
+<div id="share_div"></div>
+<A HREF="javascript:blaze._RESTShare(blaze.userId,function(res,data){alert(res+':'+data);});">Post fake Share immediately</A>, with no dialog, using <B>REST API stream.publish</B><BR>
+<A HREF="javascript:blaze._shareDialog('http://sdk.oberon-media.com/JS/index.html',function(res,mess){alert('Share result:'+res+':'+mess);})">SHOW fake Share dialog</A> to make share call emulation using <B>REST API stream.publish</B><BR>
+</div>
+<HR>
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - bookmark game</h3>
+<A HREF="javascript:blaze_bookmark(document.getElementById('bookmark_root'))">Bookmark</A><BR>
+<div id="bookmark_root"></div>
+</div>
+<HR>
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - "LIKE" button for launcher</h3>
+<A HREF="javascript:blaze_like(document.getElementById('like_root'))">Like button</A><BR>
+<div id="like_root"></fb:like></div>
+</div>
+<HR>
+
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - Omniture Reporting</h3>
+<A HREF="javascript:window.blaze._omnitureLaunch();">Start Game</A></B> "Game Start"(event5), "UniqueUserStart"(event49) and User data Created, "UniqueGameStart"(event50) User+Game data Created<BR>
+<A HREF="javascript:window.blaze._omnitureSessionStart();">New Session Start</A></B> without Game launching (event51)<BR>
+<A HREF="javascript:window.blaze._omniturePurchase(1.44);">Purchase Game</A></B> for (1.44 USD)<BR>
+</div>
+<HR>
+
+
+<div style="background-color:#AAFFAA;">
+<h3>S.SDK - Scores API</h3>
+<A HREF="javascript:window.blaze.scores_setUserGameEpisodeScore(1,100,'GAME',function(res){alert(JSON2str(res));});">setUserGameEpisodeScore(episode:1,score:100,scoreType:GAME)</A> <BR>
+<A HREF="javascript:window.blaze.scores_setUserGameScore(100,'GAME',function(res){alert(JSON2str(res));});">setUserGameScore(score:100,scoreType:GAME)</A> <BR>
+<A HREF="javascript:window.blaze.scores_getGameFriendsEpisodeLeaderBoard(1,8,'GAME','ASCENDING',function(res){alert(JSON2str(res));});">getGameFriendsEpisodeLeaderBoard(episode:1,boardSize:8,scoreType:GAME,sort:ASCENDING)</A><BR>
+<A HREF="javascript:window.blaze.scores_getGameFriendsLeaderBoard(8,'GAME','ASCENDING',function(res){alert(JSON2str(res));});">getGameFriendsLeaderBoard(boardSize:8,scoreType:GAME,sortOrder:ASCENDING)</A><BR>
+<A HREF="javascript:window.blaze.scores_getGameLeaderBoard('GAME','ASCENDING',function(res){alert(JSON2str(res));});">getGameLeaderBoard(scoreType:GAME,sortOrderASCENDING)</A><BR>
+<A HREF="javascript:window.blaze.scores_getUserGameEpisodeScoreAndRank(1,'GAME',function(res){alert(JSON2str(res));});">getUserGameEpisodeScoreAndRank(episode:1,scoreType:GAME)</A><BR>
+<A HREF="javascript:window.blaze.scores_getUserGameEpisodeScore(1,'GAME',function(res){alert(JSON2str(res));});">getUserGameEpisodeScore(episode:1,scoreType:GAME)</A><BR>
+<A HREF="javascript:window.blaze.scores_getUserGameScoreAndRank(function(res){alert(JSON2str(res));});">getUserGameScoreAndRank()</A><BR>
+<A HREF="javascript:window.blaze.scores_getUserGameRank('GAME',function(res){alert(JSON2str(res));});">getUserGameRank(scoreType:GAME)</A><BR>
+<A HREF="javascript:window.blaze.scores_getUserGameScore(function(res){alert(JSON2str(res));});">getUserGameScore()</A><BR>
+</div>
+<HR>
+
+
+<!--
+<div style="background-color:#AAFFAA;">
+<h3>News Feed</h3>
+<iframe src="http://www.facebook.com/plugins/live_stream_box.php?app_id=112613825461047&width=800&height=400&via_url&always_post_to_friends=true" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:800px; height:400px;" allowTransparency="true"></iframe>
+</div>
+<HR>
+-->
+
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<script language="javascript" type="text/javascript" SRC='http://sdk.oberon-media.com/JS/cookie.js'></script>
+<script language="javascript" type="text/javascript">
+<!--
+function getUrlParameter(url, name) {
+	name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+	var regexS = "[\\?&]" + name + "=([^&#]*)";
+	var regex = new RegExp(regexS);
+	var results = regex.exec(url);
+	if (results == null)
+		return "";
+	else
+		return results[1];
+};
+
+
+var action=getUrlParameter(window.location.href,'action');
+var id=getUrlParameter(window.location.href,'id');
+
+// WE CAN get FB result from POST
+// and our params from GET
+var res='1';
+
+//alert('setCooke name='+'callback-'+action+'-'+id+'    value='+res);
+setCookie('callback-'+action+'-'+id,res,'oberon-media.com');
+setTimeout(function(){window.close();},10);
+//-->
+</script>
+
+

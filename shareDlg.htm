@@ -1,0 +1,254 @@
+<table border=0 cellpadding="0" cellspacing="0" width="100%" height="100%">
+  <tr>
+    <td class="dialog-head">
+	<h2 class="homelink">Post to Profile</h2>
+    </td>
+  </tr>
+  <tr>
+    <td height="100%">
+
+	<table border=0 cellpadding="0" cellspacing="0" width="100%" height="100%" class="share_maintable">
+	  <tr>
+	    <td valign=top>
+		<a class="user-pic-link" href="http://www.facebook.com/profile.php?id=%user_id%"><img class="user-pic" src="https://fbcdn-profile-a.akamaihd.net/hprofile-ak-snc4/hs475.snc4/49854_100000012067019_7343_q.jpg"/></a>
+	    </td>
+	    <td valign="top">
+		<textarea id="share_text" class='share_textarea'>What's on your mind?</textarea><br>
+		<input type="text" id="share_cap" class="share_cap" onfocus="var el=document.getElementById('share_cap');el.focused='true';el.setAttribute('focused','true');" onblur="var el=document.getElementById('share_cap');el.focused='false';el.setAttribute('focused','false');" onchange="document.getElementById('share_href').innerText=this.value;" value="%caption%"><br>
+		<span id="share_href" class="share_href">%caption%</span>
+	    </td>
+	  </tr>
+	</table>
+
+    </td>
+  </tr>
+  <tr>
+    <td class="dialog-footer">
+
+	<table border="0" cellpadding="0" cellspacing="4" width="100%" height="100%">
+	  <tr>
+	    <td valign="center" width="100%">
+		<img src="https://s-static.ak.facebook.com/rsrc.php/yS/r/I-6WhcLLGrb.gif" STYLE="margin-left:20px;"><!--Send as a Message instead-->
+	    </td>
+	    <td valign="center">
+		<a class="security-choose" onclick="var el=document.getElementById('security_list');if(el.open){el.open=false;el.removeAttribute('open');}else{el.open=true;el.setAttribute('open','true');}">
+		<img class="security-choose-img">
+		</a>
+		<div STYLE="position:absolute;display:inline-block;height:1px;width:1px;"><div id="security_list" class="uiSelectorMenuWrapper">
+			<ul class="uiMenu uiSelectorMenu" role="menu" STYLE="list-style-type:none;">
+
+							<li class="uiMenuItem uiMenuItemRadio uiSelectorOption" data-label="Everyone">
+							<a class="itemAnchor" rel="ignore" href="#" aria-checked="false" tabindex="0" role="menuitemradio" onclick="var el=document.getElementById('security_list');el.open=false;el.removeAttribute('open');el.selected='EVERYONE';">
+							<span class="itemLabel fsm">Everyone</span>
+							</a>
+							</li>
+							<li class="uiMenuItem uiMenuItemRadio uiSelectorOption checked" data-label="Friends of Friends">
+							<a class="itemAnchor" rel="ignore" href="#" aria-checked="true" tabindex="-1" role="menuitemradio" onclick="var el=document.getElementById('security_list');el.open=false;el.removeAttribute('open');el.selected='FRIENDS_OF_FRIENDS';">
+							<span class="itemLabel fsm">Friends of Friends</span>
+							</a>
+							</li>
+							<li class="uiMenuItem uiMenuItemRadio uiSelectorOption" data-label="Friends Only">
+							<a class="itemAnchor" rel="ignore" href="#" aria-checked="false" tabindex="-1" role="menuitemradio" onclick="var el=document.getElementById('security_list');el.open=false;el.removeAttribute('open');el.selected='ALL_FRIENDS';">
+							<span class="itemLabel fsm">Friends Only</span>
+							</a>
+							</li>
+							<li class="uiMenuItem uiMenuItemRadio uiSelectorOption" data-label="Customize">
+							<a class="itemAnchor" rel="ignore" href="#" aria-checked="false" tabindex="-1" role="menuitemradio" onclick="var el=document.getElementById('security_list');el.open=false;el.removeAttribute('open');el.selected='CUSTOM';">
+							<span class="itemLabel fsm">
+							<span class="customize">Customize</span>
+							<span class="customEdit">
+							Custom
+							<span class="mll editLink">edit</span>
+							</span>
+							</span>
+							</a>
+							</li>
+			</ul>
+		</div></div>
+	    </td>
+	    <td valign="center">
+		<div class="share_button-wrap"><input type="button" class="share_button-share" value="Share" onclick="window.blaze._shareDialogSubmit();"></div>
+	    </td>
+	    <td valign="center">
+		<div class="cancel_button-wrap"><input type="button" class="share_button-cancel" value="Cancel" onclick="window.blaze._closeDialog();"></div>
+	    </td>
+	  </tr>
+	</table>
+
+    </td>
+  </tr>
+</table>
+<a href="javascript:void();" class="dialog-close_icon" onclick="window.blaze._closeDialog();"></a>
+
+
+<!--
+
+
+<link rel="stylesheet" type="text/css" href="http://sdk.oberon-media.com/JS/images/dialog.css">
+
+<div id="booklet">
+
+	<div id="content" class="fb_content clearfix">
+		<div class="bookmarklet">
+			<div class="UISharer_Body">
+				<div class="UIShareComposer clearfix STATE_POST_TO_PROFILE UIComposer_STATE_PIC_OUTSIDE UIComposer_STATE_INPUT_FOCUSED">
+					<div class="UISharer_ComposerInputsAndStage">
+						<div class="UIComposer_Content">
+							<div class="UIShareComposer_LabelsAndInputs clearfix">
+								<label id="UIShareComposer_RecipLabel" class="UIShareComposer_Label">To:</label>
+
+								<div class="UIShareComposer_Input">
+									<div id="ids" class="UIShareComposer_MessageRecipients UIShareComposer_RecipientTokenizer hidden tokenizer clearfix" tabindex="-1">
+										<span id="c4d11d878ed5e07972821848_tokenizer_placeholder" class="placeholder" style=""/>
+										<span class="tokenizer_stretcher">^_^</span>
+										<span class="tab_stop">
+											<input id="c4d11d878ed5e07972821848_token_input" type="text"/>
+										</span>
+									</div>
+								</div>
+
+
+								<label id="UIShareComposer_MessageLabel" class="UIShareComposer_Label">Message:</label>
+
+								<div class="UIShareComposer_Input">
+									<div class="UIComposer_InputArea">
+										<div class="UIComposer_InputShadow">
+											<div id="c4d11d878ed2253320142042_input" class="Mentions_Input DOMControl_placeholder" contenteditable="true" style="width: 445px;">
+												What's on your mind?
+												<br/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="UIComposer_AttachmentArea">
+								<div class="UIComposer_AttachmentArea_Shadow">
+									<div class="UIComposer_AttachmentArea_Cache">
+										<div class="UIShareStage_ShareContent">
+											<div class="UIShareStage_Title">
+												<span>
+													<a class="UIShareStage_InlineEdit inline_edit" _onclick="new InlineEditor(this, "attachment[params][title]", $("stage4d11d878ecf9f9e27530131"), null, false); return false;">http://sdk.oberon-media.com/JS/</a>
+												</span>
+											</div>
+
+											<div class="UIShareStage_Subtitle">http://apps.facebook.com/blaze-sdk/?reas...</div>
+
+											<div class="UIShareStage_Summary">
+												<p class="UIShareStage_BottomMargin">
+												<a class="UIShareStage_InlineEdit inline_edit" _onclick="new InlineEditor(this, "attachment[params][summary]", $("stage4d11d878ecf9f9e27530131"), null, true); return false;"></a>
+												</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="UIComposer_ButtonArea clearfix" STYLE="background:green">
+						<div class="UIShareComposer_OptionsAndButtons">
+
+
+						<ul class="UIShareComposer_SharingOptions">
+						<li id="POST_TO_PROFILE" class="UIShareComposer_PostToProfile hidden">
+						<span class="UIShareComposer_SharingOptions_Icon">
+						<i class="img sp_26olor sx_8373e8"/>
+						</span>
+						<div class="UIShareComposer_SharingOptions_Text">
+							<a tabindex="-1" href="#">Post to Profile instead</a>
+						</div>
+						</li>
+						<li id="SEND_AS_MESSAGE" class="UIShareComposer_SendAsMessage">
+						<span class="UIShareComposer_SharingOptions_Icon">
+						<i class="img sp_2yd9vw sx_90bbfe"/>
+						</span>
+						<div class="UIShareComposer_SharingOptions_Text">
+							<a tabindex="-1" href="#">Send as a Message instead</a>
+						</div>
+						</li>
+						</ul>
+
+
+						<ul class="UIComposer_Buttons">
+						<li class="UIComposer_FormButtons">
+						<label class="UIComposer_SubmitButton uiButton uiButtonConfirm uiButtonLarge">
+						<input type="button" value="Share"/>
+						</label>
+						<label class="UIShareComposer_CancelButton uiButton uiButtonLarge" STYLE="background:red;">
+						[<input type="button" value="Cancel"/>]
+						</label>
+						</li>
+						<li class="UIComposer_PrivacyEtc">
+						<div id="u516097_1" class="fbPrivacyWidget UIPrivacyWidget_Root UIComposer_PrivacyWidget UIComposer_PrivacyEtcButton">
+							<div id="u516097_2" class="uiSelector uiSelectorRight uiSelectorBottomUp uiSelectorNormal uiSelectorDynamicTooltip">
+								<div class="wrap">
+									<a class="uiTooltip uiSelectorButton uiButton uiButtonSuppressed uiButtonNoText" rel="toggle" data-tooltip="Friends of Friends" data-length="30" aria-haspopup="1" role="button" href="#">
+									<i class="mrs img sp_26olor sx_1351d1"/>
+									<span class="uiButtonText"/>
+									<span class="uiTooltipWrap top right righttop">
+									<span class="uiTooltipText">Friends of Friends</span>
+									</span>
+									</a>
+									<div class="uiSelectorMenuWrapper uiToggleFlyout">
+										<ul class="uiMenu uiSelectorMenu" role="menu">
+										<li class="uiMenuItem uiMenuItemRadio uiSelectorOption" data-label="Everyone">
+										<a class="itemAnchor" rel="ignore" href="#" aria-checked="false" tabindex="0" role="menuitemradio">
+										<span class="itemLabel fsm">Everyone</span>
+										</a>
+										</li>
+										<li class="uiMenuItem uiMenuItemRadio uiSelectorOption checked" data-label="Friends of Friends">
+										<a class="itemAnchor" rel="ignore" href="#" aria-checked="true" tabindex="-1" role="menuitemradio">
+										<span class="itemLabel fsm">Friends of Friends</span>
+										</a>
+										</li>
+										<li class="uiMenuItem uiMenuItemRadio uiSelectorOption" data-label="Friends Only">
+										<a class="itemAnchor" rel="ignore" href="#" aria-checked="false" tabindex="-1" role="menuitemradio">
+										<span class="itemLabel fsm">Friends Only</span>
+										</a>
+										</li>
+										<li class="uiMenuItem uiMenuItemRadio uiSelectorOption" data-label="Customize">
+										<a class="itemAnchor" rel="ignore" href="#" aria-checked="false" tabindex="-1" role="menuitemradio">
+										<span class="itemLabel fsm">
+										<span class="customize">Customize</span>
+										<span class="customEdit">
+										Custom
+										<span class="mll editLink">edit</span>
+										</span>
+										</span>
+										</a>
+										</li>
+										</ul>
+									</div>
+								</div>
+								<select name="UIPrivacyWidget[0]">
+									<option value="80">Everyone</option>
+									<option selected="1" value="50">Friends of Friends</option>
+									<option value="40">Friends Only</option>
+									<option value="111">Customize</option>
+								</select>
+							</div>
+							<div class="UIPrivacyWidget_Form">
+								<input type="hidden" name="privacy_data[0][value]" value="50"/>
+								<input type="hidden" name="privacy_data[0][friends]" value="0"/>
+								<input type="hidden" name="privacy_data[0][list_anon]" value="0"/>
+								<input type="hidden" name="privacy_data[0][list_x_anon]" value="0"/>
+							</div>
+						</div>
+						</li>
+						</ul>
+
+						</div>
+					</div>
+
+
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+-->

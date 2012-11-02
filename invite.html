@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<title>Invite More Friends</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+	body{		
+		padding:0px; margin:0px;
+	}
+</style>
+<script language=javascript SRC='cookie.js'></script>
+<script language=javascript SRC='http://ogc.oberon-media.com/SDK/js/common/sring/blaze.js'></script>
+<script language=javascript SRC='http://ogc.oberon-media.com/SDK/js/common/sring/json.js'></script>
+<script language=javascript SRC='http://ogc.oberon-media.com/SDK/js/common/sring/ajax-proxy.js'></script>
+</head>
+
+
+<body style="background-color: #D2D9E6" ONUNLOAD="setCookie('invite_succeed','false');"> 
+<div id="fb-root"></div>
+<div id="fb_div">
+
+</div>
+<script type="text/javascript">
+<!--
+var auth_url = "https://graph.facebook.com/oauth/authorize?client_id={0}&redirect_uri={1}&display=popup";
+var invite_url = "http://ogc.oberon-media.com/SDK/html/common/sring/test/invite.html";
+
+// INIT Facebook 
+var APP_ID='121595874519903';
+var GAME_ID='118392197';
+
+window.fbAsyncInit = function() {
+	FB.init({appId: APP_ID, status: true, cookie: true, xfbml: true});
+	};
+(function() {
+	var e = document.createElement('script');
+	e.async = true;
+	e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+	document.getElementById('fb-root').appendChild(e);
+	//e.onload = function() { }
+	e.onreadystatechange = function() { 
+		//HERE FaceBook SDK is loaded
+		SURE_Blaze( function(blaze) {
+			//INIT AJAX
+			window.ajax=new AJAX('http://ogc.oberon-media.com/SDK/html/common/sring/ajax-proxy.htm',function() {
+				initApp(blaze);
+				}
+				);
+			});
+		};
+	e.onload=e.onreadystatechange;
+	}()
+);
+
+
+function initApp(blaze)
+{
+
+	//here can be set:
+	blaze.gameId=GAME_ID;
+
+	blaze.getLoginStatus(
+		function() { 
+
+		//HERE Facebook Login status has GOT
+
+		if(window.blaze.userId) {	// ALREADY LOGGED INTO FB
+
+			blaze._srLogin(function() {
+
+					var href = unescape(getCookie("inv_url"));
+					var title = unescape(getCookie("inv_title"));
+					var ids = unescape(getCookie("inv_ids"));
+					var gift = unescape(getCookie("inv_gift"));
+
+					if(title && href && ids)	DoInvite(href,title,ids,gift);
+					else				DoInvite(href,"","",gift);
+				}
+				);
+
+			}
+		else {	
+			alert('Not logged into FB. Strange');
+			}
+
+		}); //getLoginStatus()
+
+	//FB=window.blaze		//to substitute FB with Blaze.
+}
+
+
+function DoInvite(url,label,ids,gift)
+{
+	var a='';
+	if(gift && gift != null && gift != "null") {
+		a = 
+	'	<fb:serverFbml>'+
+	'	<script type="text/fbml">'+ 
+	'	<fb:request-form action="http://ogc.oberon-media.com/SDK/html/common/sring/test/closePage.html"'+ 
+	'         			method="post"'+ 
+	'				invite="false"'+
+	'         			type="game gift"'+ 
+	'		 			content="Send a gift to your friend who has also playing the '+label+'. Here is the link to the game! <fb:req-choice url=\''+url+'\' label=\'Download\' />"'+ 
+	'		<fb:multi-friend-selector rows="3" exclude_ids="'+ids+'" showborder="true" actiontext="Send a gift in '+label+'"/>'+
+	'	</fb:request-form>'+
+	'	<\/script>'+
+	'	</fb:serverFbml>';
+		}
+	else {
+		a = 
+	'	<fb:serverFbml>'+
+	'	<script type="text/fbml">'+ 
+	'	<fb:request-form action="http://ogc.oberon-media.com/SDK/html/common/sring/test/closePage.html"'+ 
+	'         			method="post"'+ 
+	'				invite="true"'+
+	'         			type="free game request"'+ 
+	'		 			content="I am playing '+label+' and would like you to join me.  Here is a link for a FREE DOWNLOAD of the game! <fb:req-choice url=\''+url+'\' label=\'Download\' />"'+ 
+	'		<fb:multi-friend-selector rows="3" exclude_ids="'+ids+'" showborder="true" actiontext="Invite your friends to play '+label+'"/>'+
+	'	</fb:request-form>'+
+	'	<\/script>'+
+	'	</fb:serverFbml>';
+		}
+
+	document.getElementById("fb_div").innerHTML = a;
+	//FB.XFBML.parse(document.getElementById("fb_div")) 
+	blaze.parse(document.getElementById("fb_div"));
+}
+
+
+var getUrlParameter = function (url, name) {
+	name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+	var regexS = "[\\?&]" + name + "=([^&#]*)";
+	var regex = new RegExp(regexS);
+	var results = regex.exec(url);
+	if (results == null)
+		return "";
+	else
+		return results[1];
+};
+
+function getCookie (name) {
+	var arg = name + "=";
+	var alen = arg.length;
+	var clen = document.cookie.length;
+	var i = 0;
+	while (i < clen) {
+		var j = i + alen;
+		if (document.cookie.substring(i, j) == arg)
+			return getCookieVal(j);
+		i = document.cookie.indexOf(" ", i) + 1;
+		if (i == 0)
+			break;
+	}
+	return null;
+}
+function getCookieVal(offset) {
+		var endstr = document.cookie.indexOf(";", offset);
+		if (endstr == -1)
+			endstr = document.cookie.length;
+		return unescape(document.cookie.substring(offset, endstr));
+};
+
+//-->
+</script>
+
+</body>
+</html>

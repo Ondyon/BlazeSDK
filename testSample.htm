@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 1.1 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Blaze SDK test</title>
+<script language="javascript" type="text/javascript" SRC='http://sdk.oberon-media.com/JS/blaze.js'></script>
+</head>
+
+
+<!-- initally the background is RED. This means Blaze is not loaded yet -->
+<body style='background-color:#DD0000;'>
+
+<!-- The diagnostic DIV. for 'Loading...' message and errors -->
+<DIV ID='status_div'>
+<TABLE>
+  <TR>
+    <TD><IMG SRC='http://sdk.oberon-media.com/JS/loading.gif'></TD>
+    <TD>
+	<H1>Processing data...</H1>
+	<DIV ID='status'></DIV>
+	<DIV ID='derror' STYLE='background-color:#DD3333;'></DIV>
+    </TD>
+  </TR>
+</TABLE>
+</DIV>
+
+
+<!-- Facebook container. Required by Facebook! -->
+<div id="fb-root"></div>
+
+<script language=javascript>
+<!--
+var GAME_NAME='test Game';
+var APP_ID='112613825461047';		// ID of Facebook Application. IMPORTANT!
+var GAME_ID='500002240';		// ID on SocialRing server IMPORTANT!
+var GAME_PAGE='http://apps.facebook.com/blaze-sdk/';
+
+
+
+// Launched inside BlazeInit()
+// set proper variables and event handlers here 
+function b_setVars(blaze)
+{
+	blaze.gameName=GAME_NAME;
+	blaze.channel='0';		//on FACEBOOK
+	blaze.SUBST_URL=GAME_PAGE;
+
+	blaze.on_begin=function(blaze,func) {		// func is a name of background function started
+		var el=document.getElementById('status');
+		el.innerHTML=func;
+		}
+	blaze.on_end=function(blaze,func) {		// func is a name of background function finished
+		var el=document.getElementById('status');
+		if(blaze.status_pending.length==0) {		//no more background processes - paint screen white
+			document.body.style.backgroundColor='#FFFFFF';
+			el.innerHTML=''; document.getElementById('status_div').style.display='none';
+
+			if(func=='_redirect') {
+				//the LAST background proc is finished
+				// initialization process completed
+				// you can put any code here
+				//
+				alert('Blaze INIT Complete');
+				// performOnStartWork();
+				}
+			}
+		else {						// background processes are working - paint screen red
+			document.body.style.backgroundColor='#DD0000';
+			document.getElementById('status_div').style.display='';
+			}
+		}
+	blaze.on_error=function(str) {
+		var el=document.getElementById('derror');
+		el.innerHTML=str;
+		}
+}
+
+
+// and now START the initialization process
+BlazeInit(GAME_ID,b_setVars);
+
+// YOU MAY NOT perform any operation HERE
+//  blaze.api()...    THIS IS ERROR! there's no blaze yet!
+// put it inside   blaze.on_end()
+// and only if  blaze.status_pending.length==0 (no pending processes)  
+// or if last background process (func=='_redirect') is finished
+// or launch it on button click
+
+//-->
+</script>
+
+
+
+<!-- HERE PostFeed example on button click -->
+
+<script language=javascript>
+<!--
+
+function postFeed(user)
+{
+	if(blaze.status_pending.length!=0) { alert('Init processes are not finished yet!'); return; }
+
+
+	var text = 'This text will be posted to friends feed';
+
+	var obj={
+		message: 'Test message posted using blaze.postFeed',
+		caption: 'Test Caption from blaze.postFeed()',
+		link: 'http://google.com'
+	 }	//message, picture, link, name, caption, description, source   etc.
+
+
+	FB.api('/'+user+'/feed', 'post', obj, 
+		function(response) {
+		  if (!response || response.error) {
+			if(!response) { alert("no response"); }
+			else {	alert('Error occured '+response.error.message); }
+
+		  } else {
+		    alert('SUCCEED. Post ID: ' + response.id);
+		  }
+		}
+		);
+}
+//-->
+</script>
+
+<input type=button onclick="postFeed('me');" value="Post Feed">
+
+
+
+<P>
+
+</body>
+</html>

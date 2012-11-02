@@ -1,0 +1,97 @@
+<html>
+<HEAD>
+<script src="http://sdk.oberon-media.com/JS/cookie.js" type="text/javascript"></script>
+<script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php" type="text/javascript"></script>
+</HEAD>
+
+
+<BODY>
+<DIV ID='fb-root'></DIV>
+
+<SCRIPT LANGUAGE=javascript>
+<!--
+//var APP_ID='112613825461047';
+
+window.app_id='';
+
+function init()
+{
+	var pos=window.location.href.indexOf('#');
+	var data=window.location.href.substr(pos+1);
+	var pos=data.indexOf('&');
+	var pipe_id=data.substr(0,pos);
+	var back_domain=data.substr(pos+1);
+
+	window.pipe=new CookiePipe(pipe_id,back_domain);
+
+	window.pipe.listen(function(id,data){
+
+		var pos=data.indexOf('|');
+		var command='';
+		var request='';
+		if(pos==-1) { command=data; }
+		else {
+			command=data.substr(0,pos);
+			request=data.substr(pos+1);
+			}
+
+		if(command=='load') {
+			window.app_id=request;
+			window.pipe.reply(id,'load OK');
+			return;
+			}
+
+		if(command=='send') {
+			var pos=request.indexOf('|');
+			var command=request.substr(0,pos);
+			var ddd=request.substr(pos+1);
+			var pos=ddd.indexOf('|');
+			var func=ddd.substr(0,pos);
+			var params=ddd.substr(pos+1);
+
+			//var params_str='';
+			//var params_arr='';
+			//eval('var params_arr='+params);
+			//for(var par in params_arr) { params_str+= (params_str ? ',' : '') + params_arr[par]; }
+
+			if(params && params.length>2) params=params.substr(1,params.length-2);
+
+			//params=params.replace(/function\((.*?)\)\{/,"function($1){"+"window.pipe.reply("+id+",$1);");
+
+			var str='res=FB.'+command+'.'+func+'('+params+')';
+//alert("TO EXEC:"+str);
+
+			var res='';
+			try {
+				eval(str);
+				window.pipe.reply(id,res);
+				}
+			catch(ex) { 
+				window.pipe.reply(id,'ERROR '+ex.message+ '\r\n'+str);
+				}
+			}
+
+		if(command=='require') {
+			if(!request) { window.pipe.reply(id,'REQUIRE error'); return; }
+
+			FB_RequireFeatures([request], function() {
+				FB.Facebook.init(window.app_id, "xd_receiver.htm");
+
+				var str='';
+				for(var key in FB[request]) {
+					if(str) str+=',';
+					str+='"'+key+'"';
+					}
+				window.pipe.reply(id,request+'|'+str);
+				});
+			}
+		});
+}
+
+//-->
+</SCRIPT>
+
+</HEAD>
+<BODY ONLOAD="init();">
+OLD API Proxy v.1.01 - OK
+</BODY>

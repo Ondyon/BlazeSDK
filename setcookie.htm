@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Cache-Control" content="no-cache">
+<script type="text/javascript" SRC='http://sdk.oberon-media.com/JS/cookie.js'></script>
+
+<SCRIPT LANGUAGE="javascript">
+<!--
+function init()
+{
+	var data=window.location.hash;
+	if(data.charAt(0)=='#') data=data.substr(1);
+	var pos=data.indexOf('&');
+	var name=data.substr(0,pos);
+	var value=data.substr(pos+1);
+	setCookie(name,unescape(value),window.location.hostname);
+//	window.close();
+//alert("Cookie set on sdk "+name+"="+value);
+}
+//-->
+</SCRIPT>
+
+</HEAD>
+<BODY ONLOAD="init();">
+AJAX Proxy setter v.1.05
+</BODY>
+</HTML>
